@@ -1,34 +1,42 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const countdown = () => {
-        const endDate = new Date('2024-12-31T23:59:59').getTime();
+function startCountdown() {
+    const input = document.getElementById('datetime-input').value;
+    const countdownElement = document.getElementById('countdown');
+    const isClicked = false;
+
+    // if(!isClicked){
+    //     countdownElement = 0;
+    // }
+    
+    if (!input) {
+        countdownElement.textContent = 'Please enter a valid date and time.';
+        return;
+    }
+    
+    const targetDate = new Date(input).getTime();
+    
+    if (isNaN(targetDate)) {
+        countdownElement.textContent = 'Invalid date. Please enter a valid date and time.';
+        return;
+    }
+    
+    const interval = setInterval(() => {
         const now = new Date().getTime();
-        const currentDate = new Date();
-        const timeRemaining = endDate - now;
-
-        const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-
-        document.getElementById('days').innerText = days;
-        document.getElementById('hours').innerText = hours;
-        document.getElementById('minutes').innerText = minutes;
-        document.getElementById('seconds').innerText = seconds;
+        const distance = targetDate - now;
         
-        var dayInMonth = ('0' + currentDate.getDate()).slice(-2);
-        var month = ('0' + (currentDate.getMonth() + 1)).slice(-2);
-        var year = currentDate.getFullYear();
 
-        var dateString =  dayInMonth + " : " + month + " : " + year;
-
-        document.getElementById('today').innerText= dateString;
-
-        if (timeRemaining < 0) {
+        if (distance < 0) {
             clearInterval(interval);
-            document.getElementById('countdown').innerHTML = "Event has started!";
+            countdownElement.textContent = 'Countdown ended!';
+            return;
         }
-    };
+        // isClicked = true;
 
-    const interval = setInterval(countdown, 1000);
-    countdown(); 
-});
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        countdownElement.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }, 1000);
+    
+}
